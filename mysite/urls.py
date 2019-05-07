@@ -18,9 +18,12 @@ from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.views import LoginView
+from rest_framework.urlpatterns import format_suffix_patterns
+from mysite import views
+from django.urls import path
 
 from mysite.views import HomeView, LogoutView, RegisterView, ProfileView, EditProfileView, PostCommentView, \
-    ViewUserView, PostView
+    ViewUserView, PostView, EventsView, PostList, PostDetail, apilogin
 
 urlpatterns = [
     url(r'^$', HomeView.as_view(), name="home"),
@@ -35,9 +38,14 @@ urlpatterns = [
     url(r'^post-comment/$', PostCommentView.as_view()),
     url(r'^post-view/(?P<post_id>\d+)/$', PostView.as_view(), name="post_view"),
     url(r'^user/@(?P<username>[-\w\s\d]+)$', ViewUserView.as_view(), name="view_user"),
+    url('^events/$',EventsView, name='events'),
 
     url(r'^api/', include("mysite.api.urls")),
 
     url(r'^admin/', admin.site.urls),
+    path('tleutay/', views.PostList.as_view()),
+    path('tleutay/<int:pk>/', views.PostDetail.as_view()),
+    path('tleutay/apilogin/', views.apilogin),
 ] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS) +\
               static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns = format_suffix_patterns(urlpatterns)

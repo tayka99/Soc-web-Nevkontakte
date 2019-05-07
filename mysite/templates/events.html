@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load staticfiles my_filters %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <div class="block left-menu">
+                    <a href="{% url 'profile' %}">
+                        <i class="fa fa-user-circle"></i> Мой профиль
+                    </a>
+                    <a href="{% url 'home' %}">
+                        <i class="fa fa-newspaper-o"></i> Новости
+                    </a>
+                    <a href="{% url 'home' %}">
+                        <i class="fa fa-users"></i> Мои друзья
+                    </a>
+                    <a href="{% url 'events' %}">
+                        <i class="fa fa-users"></i> Мероприятия
+                    </a>
+                </div>
+            </div>
+            <div class="col-6 content">
+              <button data-toggle="modal" data-target="#eventModal">Добавить мероприятие</button>
+
+              <h4>Мои мероприятия</h4>
+                {% for event in my_events %}
+
+                <h5> {{event.name}}, {{event.datetime}} </h5>
+                <p> {{event.description}} </p>
+
+                {% endfor %}
+                <br>
+
+                  <h4>Все мероприятия</h4>
+                    {% for event in events %}
+                    <div class="card">
+                    <h5> {{event.name}}, {{event.datetime}} </h5>
+                    <p> {{event.description}} </p>
+                    {% if event not in my_events %}
+                    <form method="post">
+                      {% csrf_token %}
+                      <input hidden name="form" value="add">
+                      <input hidden name="event" value="{{event.id}}">
+                      <input type="submit" class="btn btn-primary" style="background-color: #2c2c2c; border-color: #2c2c2c; color: white;" value="Принять участие">
+                    </form>
+                    {% endif %}
+                  </div>
+
+                    {% endfor %}
+
+            </div>
+            <div class="col-3">
+                <div class="block" style="text-align: center;">
+                    <b>{{ user.get_full_name }}</b>
+                    {% if user.profile.avatar.name %}
+                        <img src="{{ user.profile.avatar.url }}" class="mainpage-avatar-img img-thumbnail">
+                    {% else %}
+                        <img src="{% static 'img/user.jpg' %}" class="mainpage-avatar-img img-thumbnail">
+                    {% endif %}
+                    <div class="right-menu-links">
+                        <a href="{% url 'profile' %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fa fa-user-circle"></i> Мой профиль
+                        </a>
+                        <a href="{% url 'edit_profile' %}" class="btn btn-outline-success btn-sm">
+                            <i class="fa fa-pencil-square"></i> Редактировать
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Добавить мероприятие</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" class="bootstrap-form">
+                      {% csrf_token %}
+                    <input hidden name="form" value="event_create">
+                    <input class="form-control" type="text" name="name" placeholder="Название мероприятия">
+                    <input class="form-control" type="text" name="date" placeholder="Дата">
+                    <input class="form-control" type="text" name="description" placeholder="Описание">
+                    <input type="submit" class="btn btn-primary" style="background-color: #2c2c2c; border-color: #2c2c2c; color: white;" value="Добавить мероприятие">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

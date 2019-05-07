@@ -1,10 +1,14 @@
 from django.contrib.auth import get_user_model
 from rest_framework.serializers import ModelSerializer
 
-from mysite.models import Profile, Post, Comment
+from mysite.models import Profile, Post, Comment, Event
 
 UserModel = get_user_model()
 
+class EventSerializer(ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ['name', 'description']
 
 class ProfileSerializer(ModelSerializer):
     class Meta:
@@ -21,12 +25,13 @@ class UserSerializer(ModelSerializer):
 
 
 class PostSerializer(ModelSerializer):
-    author = UserSerializer()
+    # author = UserSerializer()
+
 
     class Meta:
         model = Post
-        exclude = []
-
+        # exclude = []
+        fields = ['author', 'text', 'image', 'datetime']
 
 class CommentSerializer(ModelSerializer):
     author = UserSerializer()

@@ -37,6 +37,7 @@ class Post(models.Model):
     text = models.CharField(max_length=1000, verbose_name=u"Текст", null=True, blank=True)
     image = models.FileField(verbose_name=u"Картинка", null=True, blank=True)
 
+
     class Meta:
         ordering = ["-datetime"]
 
@@ -50,19 +51,8 @@ class Comment(models.Model):
     class Meta:
         ordering = ["datetime"]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+class Event(models.Model):
+    name = models.CharField(max_length=50, blank=True)
+    description = models.CharField(max_length=5000,blank=True)
+    datetime = models.CharField(max_length=15, blank=True)
+    member = models.ManyToManyField(Profile)
